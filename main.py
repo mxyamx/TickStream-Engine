@@ -1,11 +1,13 @@
 import asyncio
 from collections import deque
 import json
+import os
 import numpy as np
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi.responses import HTMLResponse
 import websockets
 
-app = FastAPI(title="TickStream-ML Engine")
+app = FastAPI(title="TickStream-Engine")
 
 BINANCE_WS_URL = "wss://stream.binance.com:9443/ws/btcusdt@trade"
 RECENT_TRADES = deque(maxlen=50)
@@ -13,6 +15,15 @@ Z_SCORE_THRESHOLD = 2.5
 
 # Keep track of connected web clients (dashboards)
 connected_clients = set()
+
+
+@app.get("/", response_class=HTMLResponse)
+async def read_root():
+    """Serves the front-end HTML dashboard directly from the root URL."""
+    if os.path.exists("index.html"):
+        with open("index.html", "r") as f:
+            return f.read()
+    return "<h3>Dashboard HTML template not found.</h3>"
 
 
 async def binance_listener():
@@ -93,11 +104,3 @@ async def websocket_endpoint(websocket: WebSocket):
             await websocket.receive_text()  # Keep connection alive
     except WebSocketDisconnect:
         connected_clients.remove(websocket)
-
-
-@app.get("/")
-def read_root():
-    return {
-        "status": "Running",
-        "message": "TickStream-ML API is active. Connect to /ws for live data.",
-    }
