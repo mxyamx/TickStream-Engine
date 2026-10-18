@@ -34,9 +34,8 @@ $$Z_t = \frac{p_t - \mu_t}{\sigma_t + \epsilon}$$
 
 ### 3. Dual-Condition Noise Floor Filter
 To eliminate false-positive volatility alerts during tight sideways consolidation, the state evaluator enforces both a normalized deviation threshold and a percentage change floor:
-
-
-$$\text{State}(t) = \begin{cases} \text{VOLATILITY\_ALERT}, & \text{if } |Z_t| > 2.5 \quad \text{AND} \quad \frac{|p_t - \mu_t|}{\mu_t} \ge 0.0003 \ (0.03\%) \\ \text{NORMAL}, & \text{otherwise} \end{cases}$$
+* **Trigger Condition:** $\text{VOLATILITY\_ALERT}$ if $|Z_t| > 2.5$ **AND** $\frac{|p_t - \mu_t|}{\mu_t} \ge 0.03\%$
+* **Default State:** $\text{NORMAL}$ otherwise
 
 ---
 
