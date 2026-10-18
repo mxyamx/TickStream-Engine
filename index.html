@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Live Monitor</title>
+    <!-- Import Google Fonts to match DRW's editorial serif style -->
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --drw-bg: #f4f4f0; /* DRW's signature clean off-white background */
+            --drw-card-bg: #0b1329; /* Deep sophisticated navy/slate */
+            --drw-text-main: #0b1329;
+            --drw-text-muted: #64748b;
+            --drw-mint: #2dd4bf; /* DRW's signature corporate mint green */
+            --drw-card-text: #f8fafc;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--drw-bg);
+            color: var(--drw-text-main);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 90vh;
+        }
+
+        .header-container {
+            max-width: 650px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            font-family: 'Instrument Serif', serif; /* DRW-style editorial serif */
+            font-size: 46px;
+            font-weight: 400;
+            margin: 0 0 5px 0;
+            letter-spacing: -0.5px;
+            color: var(--drw-text-main);
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: var(--drw-text-muted);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card {
+            background-color: var(--drw-card-bg);
+            color: var(--drw-card-text);
+            border-radius: 12px;
+            padding: 30px;
+            width: 100%;
+            max-width: 580px;
+            box-shadow: 0 20px 25px -5px rgba(11, 19, 41, 0.15), 0 10px 10px -5px rgba(11, 19, 41, 0.04);
+            border-top: 4px solid var(--drw-mint);
+        }
+
+        .top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 15px;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #94a3b8;
+            margin-bottom: 4px;
+        }
+
+        .metric-value {
+            font-family: 'Inter', sans-serif;
+            font-size: 40px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            color: #ffffff;
+        }
+
+        /* Live Stream Terminal Box */
+        .stream-container {
+            background-color: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            height: 140px;
+            overflow-y: auto;
+            padding: 10px;
+            margin-bottom: 20px;
+            font-family: monospace;
+            font-size: 13px;
+            text-align: left;
+        }
+
+        .stream-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 6px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            color: #cbd5e1;
+        }
+
+        .stream-row.buy { color: var(--drw-mint); }
+        .stream-row.sell { color: #fca5a5; }
+
+        .grid-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 15px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .detail-item .label {
+            font-size: 11px;
+            color: #94a3b8;
+            text-transform: uppercase;
+        }
+
+        .detail-item .value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #f8fafc;
+            margin-top: 2px;
+        }
+
+        .status-box {
+            padding: 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            transition: background-color 0.3s ease;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* Sophisticated Corporate Mint Status */
+        .NORMAL { 
+            background-color: rgba(45, 212, 191, 0.08); 
+            color: var(--drw-mint); 
+            border: 1px solid rgba(45, 212, 191, 0.25);
+        }
+
+        /* Subtle corporate indicator dot instead of a glowing neon orb */
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--drw-mint);
+        }
+
+        .VOLATILITY_ALERT { 
+            background-color: rgba(153, 27, 27, 0.4); 
+            color: #fca5a5; 
+            border: 1px solid rgba(252, 165, 165, 0.3);
+            animation: pulse 1.2s infinite; 
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(0.99); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-container">
+        <h1>Proven expertise for a new frontier.</h1>
+        <div class="subtitle">Real-Time Market Infrastructure</div>
+    </div>
+
+    <div class="card" id="card">
+        <div class="top-row">
+            <div>
+                <div class="metric-label">Live BTC/USDT Spot Price</div>
+                <div class="metric-value" id="price">Connecting...</div>
+            </div>
+        </div>
+
+        <!-- Ongoing Live Trade Stream Box -->
+        <div class="metric-label" style="margin-bottom: 6px;">Live Trade Stream (Rolling Buffer)</div>
+        <div class="stream-container" id="streamContainer">
+            <div class="stream-row"><span>Awaiting tick stream...</span><span>--</span></div>
+        </div>
+        
+        <div class="grid-details">
+            <div class="detail-item">
+                <div class="label">Rolling Mean (50 Ticks)</div>
+                <div class="value" id="mean">--</div>
+            </div>
+            <div class="detail-item">
+                <div class="label">Z-Score Deviation</div>
+                <div class="value" id="zscore">--</div>
+            </div>
+        </div>
+
+       <div id="statusBox" class="status-box NORMAL">
+            <div class="status-dot"></div>
+            <span>Market Stable (Nominal Flow)</span>
+        </div>
+        <div style="font-size: 11px; color: #64748b; margin-top: 8px; text-align: center; font-family: monospace;">
+            * Nominal: |Z| ≤ 2.5 & Δ < 0.03% over 50 ticks
+        </div>
+    </div>
+        
+    </div>
+    
+    <script>
+        const ws = new WebSocket("ws://127.0.0.1:8000/ws");
+        const streamContainer = document.getElementById("streamContainer");
+
+        ws.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            
+            document.getElementById("price").innerText = "$" + data.latest_price.toLocaleString();
+            document.getElementById("mean").innerText = "$" + data.mean_price.toLocaleString();
+            document.getElementById("zscore").innerText = data.z_score;
+
+            const now = new Date().toLocaleTimeString();
+            const row = document.createElement("div");
+            row.className = "stream-row " + (data.z_score >= 0 ? "buy" : "sell");
+            row.innerHTML = `<span>[${now}] Price: $${data.latest_price.toLocaleString()}</span><span>Z: ${data.z_score}</span>`;
+            
+            streamContainer.prepend(row);
+
+            if (streamContainer.children.length > 15) {
+                streamContainer.removeChild(streamContainer.lastChild);
+            }
+
+            const statusBox = document.getElementById("statusBox");
+            statusBox.className = "status-box " + data.status;
+
+            if (data.status === "VOLATILITY_ALERT") {
+                statusBox.innerHTML = `<span>🚨 VOLATILITY SPIKE DETECTED</span>`;
+            } else {
+                statusBox.innerHTML = `<div class="status-dot" style="background-color: var(--drw-mint);"></div><span>Market Stable (Nominal Flow)</span>`;
+            }
+        };
+
+        ws.onclose = function() {
+            const statusBox = document.getElementById("statusBox");
+            statusBox.innerHTML = `<span>❌ Disconnected from Backend Microservice</span>`;
+            statusBox.className = "status-box VOLATILITY_ALERT";
+        };
+    </script>
+</body>
+</html>
