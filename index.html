@@ -224,8 +224,18 @@
     </div>
     
     <script>
-        const ws = new WebSocket("ws://127.0.0.1:8000/ws");
+        // Explicitly enforce secure WSS if the page is loaded over HTTPS
+        const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+        const wsUrl = wsProtocol + window.location.host + '/ws';
+        
+        console.log("Connecting to WebSocket at:", wsUrl);
+        const ws = new WebSocket(wsUrl);
+
         const streamContainer = document.getElementById("streamContainer");
+
+        ws.onopen = function() {
+            console.log("WebSocket connection established successfully.");
+        };
 
         ws.onmessage = function(event) {
             const data = JSON.parse(event.data);
@@ -255,7 +265,12 @@
             }
         };
 
-        ws.onclose = function() {
+        ws.onerror = function(error) {
+            console.error("WebSocket error observed:", error);
+        };
+
+        ws.onclose = function(event) {
+            console.warn("WebSocket closed:", event);
             const statusBox = document.getElementById("statusBox");
             statusBox.innerHTML = `<span>❌ Disconnected from Backend Microservice</span>`;
             statusBox.className = "status-box VOLATILITY_ALERT";
