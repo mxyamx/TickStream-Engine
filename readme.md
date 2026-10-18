@@ -4,7 +4,6 @@
 ![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688?style=for-the-badge&logo=fastapi&logoColor=white)
 ![WebSockets](https://img.shields.io/badge/WebSockets-Async-010101?style=for-the-badge&logo=socketdotio&logoColor=white)
-![HTML5](https://img.shields.io/badge/UI-DRW--Inspired_Design-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 
 ---
 
